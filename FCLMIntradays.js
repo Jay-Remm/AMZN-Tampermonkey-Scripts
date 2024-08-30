@@ -31,14 +31,14 @@ if(localStorage.getItem("dayShiftStartHour") != null) {
 }
 
 let interval = setInterval(function() {
-    
-    if(document.getElementByClassName("cp-submit-row")[0] != undefined && document.getElementsByTagName("table")[0] != undefined) {
+
+    if(document.getElementsByClassName("cp-submit-row")[0] != undefined && document.getElementsByTagName("table")[0] != undefined) {
         if (document.getElementById("menuDiv") == undefined) {
-            for(let i = 0; i < document.getElementByTagName("table").length; i++) {
+            for(let i = 0; i < document.getElementsByTagName("table").length; i++) {
 
                 // Set width to 800px to fit all the intradays buttons
-                if(document.getElementByTagName("table")[i].className == "") {
-                    document.getElementByTagName("table")[i].style.width = "800px";
+                if(document.getElementsByTagName("table")[i].className == "") {
+                    document.getElementsByTagName("table")[i].style.width = "800px";
                     i = 50;
                 }
             }
@@ -50,11 +50,25 @@ let interval = setInterval(function() {
 
             // Button to show or hide the menu
             // ***** Can be better stylized. *****
-            let menuButtonDiv = document.createElement("div");
-            menuButtonDiv.id = menuButtonDiv;
-            menuButtonDiv.style = "display: contents;";
-            menuButtonDiv.innerHTML = '<input type="button" id="menuButton" value="" class="" style="float: left"; background-color ="#ffff"; background-repeat="no-repeat"; background-size="16px 16px" />';
-            document.getElementById("menuButton").addEventListener("click", buttonClickMenu);
+            let menuButtonDiv = document.createElement('div');
+            menuButtonDiv.id = 'menuButtonDiv';
+            menuButtonDiv.style.display = 'contents';
+
+            let menuButton = document.createElement('input');
+            menuButton.type = 'button';
+            menuButton.id = 'menuButton';
+            menuButton.value = '';
+            menuButton.className = '';
+            menuButton.style.float = 'left';
+            menuButton.style.backgroundColor = '#ffff';
+            menuButton.style.backgroundRepeat = 'no-repeat';
+            menuButton.style.backgroundSize = '16px 16px';
+            menuButton.style.width = '16px';
+            menuButton.style.height = '16px';
+
+            menuButtonDiv.appendChild(menuButton);
+            document.getElementsByClassName("cp-submit-row")[0].appendChild(menuButtonDiv);
+            menuButton.addEventListener('click', buttonClickMenu);
 
             function buttonClickMenu(e) {
                 if(document.getElementById("menuDiv").style.visibility == "visible") {
@@ -67,9 +81,9 @@ let interval = setInterval(function() {
             // Menu to configure the hour selections buttons
             let menuDiv = document.createElement("div");
             menuDiv.id = "menuDiv";
-            menuDiv.style = "position: fixed; visibility: hidden; background-color: grey; border-style: solid; border-color: black; border-size: 2px; width: 190px; height: 190px; left: 100px; top: 40%;";
-            menuDiv.innerHTML = 
-                '<div id="menuD" style="padding: 5px;">' + 
+            menuDiv.style = "position: fixed; visibility: hidden; background-color: grey; border-style: solid; border-color: black; border-size: 2px; width: 210px; height: 200px; left: 10px; top: 15%;";
+            menuDiv.innerHTML =
+                '<div id="menuD" style="padding: 5px;">' +
                     '<div style="text-align: left;">Start Day Shift:' +
                         '<select id="startHourDayShift" name="startHourDayShiftSelect" class="cs-select no-expand">' +
                             '<option value="0" selected="selected">00</option>' +
@@ -139,7 +153,7 @@ let interval = setInterval(function() {
                     '</div>' + // wasnt closed on the previous code - but the previous code left us with an extra unclosed div
 
                     '<div style="text-align: left;">Start Night Shift:' +
-                        '<select id="startHourDayShift" name="startHourNightShiftSelect" class="cs-select no-expand">' +
+                        '<select id="startHourNightShift" name="startHourNightShiftSelect" class="cs-select no-expand">' +
                             '<option value="0" selected="selected">00</option>' +
                             '<option value="1">01</option>' +
                             '<option value="2">02</option>' +
@@ -216,17 +230,17 @@ let interval = setInterval(function() {
             // Set the botton settings according to the menu configuration selections
             if(localStorage.getItem("dayShiftStartHour") != null) {
                 document.getElementById("startHourDayShift").value = localStorage.getItem("dayShiftStartHour");
-                document.getElementById("starMinuteDayShift").value = localStorage.getItem("dayShiftStarMinute");
+                document.getElementById("startMinuteDayShift").value = localStorage.getItem("dayShiftStartMinute");
                 document.getElementById("endHourDayShift").value = localStorage.getItem("dayShiftEndHour");
                 document.getElementById("endMinuteDayShift").value = localStorage.getItem("dayShiftEndMinute");
                 document.getElementById("startHourNightShift").value = localStorage.getItem("nightShiftStartHour");
-                document.getElementById("starMinuteNightShift").value = localStorage.getItem("nightShiftStarMinute");
+                document.getElementById("startMinuteNightShift").value = localStorage.getItem("nightShiftStartMinute");
                 document.getElementById("endHourNightShift").value = localStorage.getItem("nightShiftEndHour");
                 document.getElementById("endMinuteNightShift").value = localStorage.getItem("nightShiftEndMinute");
             }
 
             // Update localstorage values when the menu's submit button is clicked
-            document.getElementById("submitButton").addEventListener("click", buttonClickSubmit, false);
+            document.getElementById("saveButton").addEventListener("click", buttonClickSubmit, false);
 
             function buttonClickSubmit(e) {
                 localStorage.setItem("dayShiftStartHour", document.getElementById("startHourDayShift").value);
@@ -265,23 +279,26 @@ let interval = setInterval(function() {
             }
 
             // Yellow disclaimer banner disappears
-            if (document.getElementByClassName("disclaimer")[0] != null) {
-                document.getElementsByClassName("disclaimer").style.display = "none";
+            const disclaimerElements = document.getElementsByClassName("disclaimer");
+            if (disclaimerElements.length > 0) {
+                // Access the first element and set its style
+                disclaimerElements[0].style.display = "none";
             }
 
             // Variables for day and night style
-            let dayStyle = 'background-color: sky blue; color: black; padding-left: 26px; border-radius: 4px; border: 2px solid black;'
-            let nightStyle = 'background-color: midnight blue; color: white; padding-left: 26px; border-radius: 4px; border: 2px solid black;'
+            let dayStyle = 'background-color:  #baefff; color: black; border-radius: 4px; border: 2px solid black; text-align: center;';
+            let nightStyle = 'background-color:  #000a80; color: white; border-radius: 4px; border: 2px solid black; text-align: center;';
 
             // Creating the Day and Night shift intraday input buttons
-            let intradaysDiv = createElement("div");
+            let intradaysDiv = document.createElement("div");
             intradaysDiv.id = "intradaysDiv";
             intradaysDiv.style = "display: contents;";
-            intradaysDiv.innerHTML = '<input type="button" id="dayShiftYesterday" value="Day Shift (Yesterday)" class="cp-submit" style="float: left; font-size: 8px; ' + dayStyle + '">' +
-                '<input type="button" id="nightShiftYesterday" value="Night Shift (Yesterday)" class="cp-submit" style="float: left; font-size: 8px; ' + nightStyle + '">' +
-                '<input type="button" id="dayShiftToday" value="Day Shift (Today)" class="cp-submit" style="float: left; font-size: 8px; ' + dayStyle + '">' +
-                '<input type="button" id="nightShiftToday" value="Night Shift (Today)" class="cp-submit" style="float: left; font-size: 8px; ' + nightStyle + '">';
-            
+            intradaysDiv.innerHTML = '<input type="button" id="dayShiftYesterday" value="Day Shift (Yesterday)" class="cp-submit" style="float: left; font-size: 10px; ' + dayStyle + '">' +
+                '<input type="button" id="nightShiftYesterday" value="Night Shift (Yesterday)" class="cp-submit" style="float: left; font-size: 10px; ' + nightStyle + '">' +
+                '<input type="button" id="dayShiftToday" value="Day Shift (Today)" class="cp-submit" style="float: left; font-size: 10px; ' + dayStyle + '">' +
+                '<input type="button" id="nightShiftToday" value="Night Shift (Today)" class="cp-submit" style="float: left; font-size: 10px; ' + nightStyle + '">';
+            document.getElementsByClassName("cp-submit-row")[0].appendChild(intradaysDiv);
+
             document.getElementById("dayShiftYesterday").addEventListener("click", buttonClickDayYesterday, false);
             document.getElementById("nightShiftYesterday").addEventListener("click", buttonClickNightYesterday, false);
             document.getElementById("dayShiftToday").addEventListener("click", buttonClickDayToday, false);
@@ -292,13 +309,17 @@ let interval = setInterval(function() {
             // Temp dates are used to calculate yesterday and tomorrow dates without messing with today date
             let temp = new Date();
             let temp2 = new Date();
+            let temp3 = new Date();
             let today = new Date();
             let yesterday = new Date(temp2.setDate(temp2.getDate() - 1));
             let tomorrow = new Date(temp.setDate(temp.getDate() + 1));
+            // Used for yesterday when nightshift flips to a new Date at midnight
+            let yesteredAfterMidnight = new Date(temp3.setDate(temp3.getDate() - 2));
 
             let todayString;
             let yesterdayString;
             let tomorrowString;
+            let yesterdayAfterMidnightString;
 
             let dd = String(today.getDate()).padStart(2, '0');
             let mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -313,8 +334,8 @@ let interval = setInterval(function() {
             }
 
             todayString = yyyy + '/' + mm + '/' + dd;
-            
-            // Set the yesterdayString and tomorrowString with values
+
+            // Set the yesterdayString and tomorrowString and yesterdayAfterMidnightString with values
             dd = String(yesterday.getDate()).padStart(2, '0');
             mm = String(yesterday.getMonth() + 1).padStart(2, '0');
             yyyy = yesterday.getFullYear();
@@ -323,22 +344,30 @@ let interval = setInterval(function() {
             mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
             yyyy = tomorrow.getFullYear();
             tomorrowString = yyyy + '/' + mm + '/' + dd;
+            dd = String(yesteredAfterMidnight.getDate()).padStart(2, '0');
+            mm = String(yesteredAfterMidnight.getMonth() + 1).padStart(2, '0');
+            yyyy = yesteredAfterMidnight.getFullYear();
+            yesterdayAfterMidnightString = yyyy + '/' + mm + '/' + dd;
 
             // Button functions
-            // Need to add an extra exception to the dates when night shift crosses midnight, after that time "yesterday's" shift date started 2 date days ago and today's date started 1 date day ago. This can be thrown in an if statement that shifts the date -1 if the hours are between midnight and EOS of night shift. Add if statement where the document.getElementById("startDateIntraday") value is set.
             function buttonClickDayYesterday(e) {
                 if(document.getElementsByName("spanType").length > 0) {
                     document.getElementsByName("spanType")[document.getElementsByName("spanType").length - 1].checked = true;
                 }
 
-                // Start if()else explained above
-                document.getElementById("startDateIntraday").value = yesterdayString;
-                document.getElementById("endDateIntraday").value = yesterdayString;
-                // End if()else
-                document.getElementById("startHourIntraday").selectedIndex = dayShiftStartHour;
-                document.getElementById("startMinuteIntraday").selectedIndex = dayShiftStartMinute;
-                document.getElementById("endHourIntraday").selectedIndex = dayShiftEndHour;
-                document.getElementById("endMinuteIntraday").selectedIndex = dayShiftEndMinute;
+                // if else() statement makes the shift date consistant for night shifts pulling data that after their shift crosses into a new date.
+                if (today.getHours() < dayShiftStartHour) {
+                    document.getElementById("startDateIntraday").value = yesterdayAfterMidnightString;
+                    document.getElementById("endDateIntraday").value = yesterdayAfterMidnightString;
+                } else {
+                    document.getElementById("startDateIntraday").value = yesterdayString;
+                    document.getElementById("endDateIntraday").value = yesterdayString;
+                }
+
+                document.getElementById("startHourIntraday").value = dayShiftStartHour;
+                document.getElementById("startMinuteIntraday").value = dayShiftStartMinute;
+                document.getElementById("endHourIntraday").value = dayShiftEndHour;
+                document.getElementById("endMinuteIntraday").value = dayShiftEndMinute;
             }
 
             function buttonClickNightYesterday(e) {
@@ -346,14 +375,18 @@ let interval = setInterval(function() {
                     document.getElementsByName("spanType")[document.getElementsByName("spanType").length - 1].checked = true;
                 }
 
-                // Start if()else explained above
-                document.getElementById("startDateIntraday").value = yesterdayString;
-                document.getElementById("endDateIntraday").value = todayStringString;
-                // End if()else
-                document.getElementById("startHourIntraday").selectedIndex = nightShiftStartHour;
-                document.getElementById("startMinuteIntraday").selectedIndex = nightShiftStartMinute;
-                document.getElementById("endHourIntraday").selectedIndex = nightShiftEndHour;
-                document.getElementById("endMinuteIntraday").selectedIndex = nightShiftEndMinute;
+                if (today.getHours() < dayShiftStartHour) {
+                    document.getElementById("startDateIntraday").value = yesterdayAfterMidnightString;
+                    document.getElementById("endDateIntraday").value = yesterdayString;
+                } else {
+                    document.getElementById("startDateIntraday").value = yesterdayString;
+                    document.getElementById("endDateIntraday").value = yesterdayString;
+                }
+
+                document.getElementById("startHourIntraday").value = nightShiftStartHour;
+                document.getElementById("startMinuteIntraday").value = nightShiftStartMinute;
+                document.getElementById("endHourIntraday").value = nightShiftEndHour;
+                document.getElementById("endMinuteIntraday").value = nightShiftEndMinute;
             }
 
             function buttonClickDayToday(e) {
@@ -361,14 +394,18 @@ let interval = setInterval(function() {
                     document.getElementsByName("spanType")[document.getElementsByName("spanType").length - 1].checked = true;
                 }
 
-                // Start if()else explained above
-                document.getElementById("startDateIntraday").value = todayString;
-                document.getElementById("endDateIntraday").value = todayString;
-                // End if()else
-                document.getElementById("startHourIntraday").selectedIndex = dayShiftStartHour;
-                document.getElementById("startMinuteIntraday").selectedIndex = dayShiftStartMinute;
-                document.getElementById("endHourIntraday").selectedIndex = dayShiftEndHour;
-                document.getElementById("endMinuteIntraday").selectedIndex = dayShiftEndMinute;
+                if (today.getHours() < dayShiftStartHour) {
+                    document.getElementById("startDateIntraday").value = yesterdayString;
+                    document.getElementById("endDateIntraday").value = yesterdayString;
+                } else {
+                    document.getElementById("startDateIntraday").value = todayString;
+                    document.getElementById("endDateIntraday").value = todayString;
+                }
+
+                document.getElementById("startHourIntraday").value = dayShiftStartHour;
+                document.getElementById("startMinuteIntraday").value = dayShiftStartMinute;
+                document.getElementById("endHourIntraday").value = dayShiftEndHour;
+                document.getElementById("endMinuteIntraday").value = dayShiftEndMinute;
             }
 
             function buttonClickNightToday(e) {
@@ -376,20 +413,26 @@ let interval = setInterval(function() {
                     document.getElementsByName("spanType")[document.getElementsByName("spanType").length - 1].checked = true;
                 }
 
-                // Start if()else explained above
-                document.getElementById("startDateIntraday").value = todayString;
-                document.getElementById("endDateIntraday").value = tomorrowString;
-                // End if()else
-                document.getElementById("startHourIntraday").selectedIndex = nightShiftStartHour;
-                document.getElementById("startMinuteIntraday").selectedIndex = nightShiftStartMinute;
-                document.getElementById("endHourIntraday").selectedIndex = nightShiftEndHour;
-                document.getElementById("endMinuteIntraday").selectedIndex = nightShiftEndMinute;
+                if (today.getHours() < dayShiftStartHour) {
+                    document.getElementById("startDateIntraday").value = yesterdayString;
+                    document.getElementById("endDateIntraday").value = todayString;
+                } else {
+                    document.getElementById("startDateIntraday").value = todayString;
+                    document.getElementById("endDateIntraday").value = tomorrowString;
+                }
+
+                document.getElementById("startHourIntraday").value = nightShiftStartHour;
+                document.getElementById("startMinuteIntraday").value = nightShiftStartMinute;
+                document.getElementById("endHourIntraday").value = nightShiftEndHour;
+                document.getElementById("endMinuteIntraday").value = nightShiftEndMinute;
             }
+            
+            // Add button click for P1,P2,P3. If value of start hour and date is = to the value of a specific shift- P? is mapped to that shift.
 
             // Stop our interval
             clearInterval(interval);
 
         }
     }
-    
+
 }, 100);
