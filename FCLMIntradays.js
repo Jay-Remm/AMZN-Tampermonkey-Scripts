@@ -21,10 +21,10 @@ let nightShiftEndMinute = 3;
 
 let firstBreakDaysHour = 10;
 let firstBreakDaysMinute = 0;
-let secondBreakDaysHour = 2;
+let secondBreakDaysHour = 14;
 let secondBreakDaysMinute = 0;
 
-let firstBreakNightsHour = 10;
+let firstBreakNightsHour = 22;
 let firstBreakNightsMinute = 0;
 let secondBreakNightsHour = 2;
 let secondBreakNightsMinute = 0;
@@ -91,15 +91,19 @@ let interval = setInterval(function() {
             function buttonClickMenu(e) {
                 if(document.getElementById("menuDiv").style.visibility == "visible") {
                     document.getElementById("menuDiv").style.visibility = "hidden";
+                   document.getElementById("periodSelectorMenu").style.visibility = "hidden";
                 } else {
                     document.getElementById("menuDiv").style.visibility = "visible";
+                    if (localStorage.getItem("periodButtons")) {
+                        document.getElementById("periodSelectorMenu").style.visibility = "visible";
+                    }
                 }
             }
 
             // Menu to configure the hour selections buttons
             let menuDiv = document.createElement("div");
             menuDiv.id = "menuDiv";
-            menuDiv.style = "position: fixed; visibility: hidden; background-color: grey; border-style: solid; border-color: black; border-size: 2px; width: 210px; height: 200px; left: 10px; top: 15%;";
+            menuDiv.style = "position: fixed; visibility: hidden; background-color: #d8ffe2; border-style: solid; border-color: black; border-size: 2px; border-radius: 4px; width: 215px; height: 400px; left: 10px; top: 15%;";
             menuDiv.innerHTML =
                 '<div id="menuD" style="padding: 5px;">' +
                     '<div style="text-align: left;">Start Day Shift: ' +
@@ -386,16 +390,14 @@ let interval = setInterval(function() {
             const periodButtonsCheckbox = document.getElementById("periodButtonsCheckbox");
 
             // Add an event listener to display the period menu
-            periodButtonsCheckbox.addEventListener("change", () => {
-                if (this.checked) {
-                    document.getElementById("periodSelectorMenu").style.visibility = "visible";
+            periodButtonsCheckbox.addEventListener("change", (e) => {
+                const periodSelectorMenu = document.getElementById("periodSelectorMenu");
+                if (e.target.checked) {
+                    periodSelectorMenu.style.visibility = "visible";
                 } else {
-                    document.getElementById("periodSelectorMenu").style.visibility = "hidden";
-                    if (periodButtons !== undefined && periodButtons != null) {
-                        periodButtons.style.visibility = "hidden";
-                    }
+                    periodSelectorMenu.style.visibility = "hidden";
                 }
-            })
+            });
 
             // Set the button configuration settings to the local storage values if local storage values are present
             if(localStorage.getItem("dayShiftStartHour") != null) {
@@ -437,7 +439,7 @@ let interval = setInterval(function() {
                 localStorage.setItem("adjustPlan", adjustPlanCheckbox.checked);
                 localStorage.setItem("emptyLines", emptyLinesCheckbox.checked);
                 localStorage.setItem("periodButtons", periodButtonsCheckbox.checked);
-                if (periodButtons.checked) {
+                if (periodButtonsCheckbox.checked) {
                     localStorage.setItem("firstBreakDaysHour", document.getElementById('firstBreakDaysHour').value)
                     localStorage.setItem("firstBreakDaysMinute", document.getElementById('firstBreakDaysMinute').value)
                     localStorage.setItem("secondBreakDaysHour", document.getElementById('secondBreakDaysHour').value)
@@ -449,6 +451,13 @@ let interval = setInterval(function() {
                 }
 
                 document.getElementById("menuDiv").style.visibility = "hidden";
+                document.getElementById("periodSelectorMenu").style.visibility = "hidden";
+
+                if (periodButtonsCheckbox.checked) {
+                    periodButtons.style.visibility = "visible";
+                } else {
+                    periodButtons.style.visibility = "hidden";
+                }
             }
 
             // Clear localstorage values when the menu's clear button is clicked
@@ -486,6 +495,7 @@ let interval = setInterval(function() {
                 adjustPlanCheckbox.checked = localStorage.getItem("adjustPlan");
                 emptyLinesCheckbox.checked = localStorage.getItem("emptyLines");
                 periodButtonsCheckbox.checked = localStorage.getItem("periodButtons");
+                document.getElementById("periodSelectorMenu").style.visibility = "hidden";
                 if (localStorage.getItem("firstBreakDaysHour") != null) {
                     document.getElementById('firstBreakDaysHour').value = localStorage.getItem("firstBreakDaysHour");
                     document.getElementById('firstBreakDaysMinute').value = localStorage.getItem("firstBreakDaysMinute");
@@ -495,6 +505,12 @@ let interval = setInterval(function() {
                     document.getElementById('firstBreakNightsMinute').value = localStorage.getItem("firstBreakNightsMinute");
                     document.getElementById('secondBreakNightsHour').value = localStorage.getItem("secondBreakNightsHour");
                     document.getElementById('secondBreakNightsMinute').value = localStorage.getItem("secondBreakNightsMinute");
+                }
+
+                if (periodButtonsCheckbox.checked) {
+                    periodButtons.style.visibility = "visible";
+                } else {
+                    periodButtons.style.visibility = "hidden";
                 }
             }
 
@@ -508,7 +524,7 @@ let interval = setInterval(function() {
             // Variables for day and night style
             let dayStyle = 'background-color:  #baefff; color: black; border-radius: 4px; border: 2px solid black; text-align: center;';
             let nightStyle = 'background-color:  #000a80; color: white; border-radius: 4px; border: 2px solid black; text-align: center;';
-            let periodStyle = 'background-color:  #444444; color: white; border-radius: 4px; border: 2px solid black; text-align: center;';
+            let periodStyle = 'background-color:  #d8ffe2; color: black; border-radius: 4px; border: 2px solid black; text-align: center;';
 
             // Creating the Day and Night shift intraday input buttons
             let intradaysDiv = document.createElement("div");
@@ -518,11 +534,11 @@ let interval = setInterval(function() {
                 '<input type="button" id="nightShiftYesterday" value="Night Shift (Yesterday)" class="cp-submit" style="float: left; font-size: 10px; ' + nightStyle + '">' +
                 '<input type="button" id="dayShiftToday" value="Day Shift (Today)" class="cp-submit" style="float: left; font-size: 10px; ' + dayStyle + '">' +
                 '<input type="button" id="nightShiftToday" value="Night Shift (Today)" class="cp-submit" style="float: left; font-size: 10px; ' + nightStyle + '">' +
-                '<div id="periodButtons" style="visibility: none;">' +
+                '<span id="periodButtons" style="visibility: none;">' +
                 '<input type="button" id="p1" value=" P1 " class="cp-submit" style="float: left; font-size: 10px; ' + periodStyle + '">' +
                 '<input type="button" id="p2" value=" P2 " class="cp-submit" style="float: left; font-size: 10px; ' + periodStyle + '">' +
                 '<input type="button" id="p3" value=" P3 " class="cp-submit" style="float: left; font-size: 10px; ' + periodStyle + '">' +
-                '</div>';
+                '</span>';
             document.getElementsByClassName("cp-submit-row")[0].appendChild(intradaysDiv);
             // Show period buttons if the local storage value for the period buttons is true (if the checkbox in the menu was selected)
             const periodButtons = document.getElementById("periodButtons");
@@ -606,6 +622,9 @@ let interval = setInterval(function() {
                 document.getElementById("startMinuteIntraday").value = dayShiftStartMinute;
                 document.getElementById("endHourIntraday").value = dayShiftEndHour;
                 document.getElementById("endMinuteIntraday").value = dayShiftEndMinute;
+
+                document.getElementById("adjustPlanHours1").checked = localStorage.getItem("adjustPlan");
+                document.getElementById("hideEmptyLineItems1").checked = localStorage.getItem("emptyLines");
             }
 
             function buttonClickNightYesterday(e) {
@@ -618,13 +637,16 @@ let interval = setInterval(function() {
                     document.getElementById("endDateIntraday").value = yesterdayString;
                 } else {
                     document.getElementById("startDateIntraday").value = yesterdayString;
-                    document.getElementById("endDateIntraday").value = yesterdayString;
+                    document.getElementById("endDateIntraday").value = todayString;
                 }
 
                 document.getElementById("startHourIntraday").value = nightShiftStartHour;
                 document.getElementById("startMinuteIntraday").value = nightShiftStartMinute;
                 document.getElementById("endHourIntraday").value = nightShiftEndHour;
                 document.getElementById("endMinuteIntraday").value = nightShiftEndMinute;
+
+                document.getElementById("adjustPlanHours1").checked = localStorage.getItem("adjustPlan");
+                document.getElementById("hideEmptyLineItems1").checked = localStorage.getItem("emptyLines");
             }
 
             function buttonClickDayToday(e) {
@@ -644,6 +666,9 @@ let interval = setInterval(function() {
                 document.getElementById("startMinuteIntraday").value = dayShiftStartMinute;
                 document.getElementById("endHourIntraday").value = dayShiftEndHour;
                 document.getElementById("endMinuteIntraday").value = dayShiftEndMinute;
+
+                document.getElementById("adjustPlanHours1").checked = localStorage.getItem("adjustPlan");
+                document.getElementById("hideEmptyLineItems1").checked = localStorage.getItem("emptyLines");
             }
 
             function buttonClickNightToday(e) {
@@ -663,6 +688,9 @@ let interval = setInterval(function() {
                 document.getElementById("startMinuteIntraday").value = nightShiftStartMinute;
                 document.getElementById("endHourIntraday").value = nightShiftEndHour;
                 document.getElementById("endMinuteIntraday").value = nightShiftEndMinute;
+
+                document.getElementById("adjustPlanHours1").checked = localStorage.getItem("adjustPlan");
+                document.getElementById("hideEmptyLineItems1").checked = localStorage.getItem("emptyLines");
             }
 
             // Period button functions will capture the shift start date and time and decide weather day or night and then behave off inputted break times to set the period.
@@ -671,16 +699,19 @@ let interval = setInterval(function() {
                     document.getElementsByName("spanType")[document.getElementsByName("spanType").length - 1].checked = true;
                 }
 
-                let shiftStartDate = document.getElementById("startDateInraday");
-                let shiftEndDate = document.getElementById("endDateInraday");
-                let shiftStartHour = document.getElementById("startHourIntraday");
+                let shiftStartDate = document.getElementById("startDateIntraday").value;
+                let shiftEndDate = document.getElementById("endDateIntraday").value;
+                let shiftStartHour = document.getElementById("startHourIntraday").value;
 
                 if (shiftStartHour == dayShiftStartHour) {
                     document.getElementById("startDateIntraday").value = shiftStartDate;
                     document.getElementById("endDateIntraday").value = shiftStartDate;
 
+                    console.log("dayShiftStartHour:", dayShiftStartHour);
+                    console.log("shiftStartHour:", shiftStartHour);
+
                     document.getElementById("startHourIntraday").value = dayShiftStartHour;
-                    document.getElementById("startMinuteIntraday").value = dayShiftEndMinute;
+                    document.getElementById("startMinuteIntraday").value = dayShiftStartMinute;
                     document.getElementById("endHourIntraday").value = firstBreakDaysHour;
                     document.getElementById("endMinuteIntraday").value = firstBreakDaysMinute;
                 } else if (shiftStartHour == nightShiftStartHour) {
@@ -704,9 +735,9 @@ let interval = setInterval(function() {
                     document.getElementsByName("spanType")[document.getElementsByName("spanType").length - 1].checked = true;
                 }
 
-                let shiftStartDate = document.getElementById("startDateInraday");
-                let shiftEndDate = document.getElementById("endDateInraday");
-                let shiftStartHour = document.getElementById("startHourIntraday");
+                let shiftStartDate = document.getElementById("startDateIntraday").value;
+                let shiftEndDate = document.getElementById("endDateIntraday").value;
+                let shiftStartHour = document.getElementById("startHourIntraday").value;
 
                 if (shiftStartHour == dayShiftStartHour) {
                     document.getElementById("startDateIntraday").value = shiftStartDate;
@@ -726,9 +757,9 @@ let interval = setInterval(function() {
                     }
 
                     document.getElementById("startHourIntraday").value = firstBreakNightsHour;
-                    document.getElementById("startMinuteIntraday").value = firstBreakDaysMinute;
-                    document.getElementById("endHourIntraday").value = secondBreakDaysHour;
-                    document.getElementById("endMinuteIntraday").value = secondBreakDaysMinute;
+                    document.getElementById("startMinuteIntraday").value = firstBreakNightsMinute;
+                    document.getElementById("endHourIntraday").value = secondBreakNightsHour;
+                    document.getElementById("endMinuteIntraday").value = secondBreakNightsMinute;
                 }
             }
 
@@ -737,9 +768,9 @@ let interval = setInterval(function() {
                     document.getElementsByName("spanType")[document.getElementsByName("spanType").length - 1].checked = true;
                 }
 
-                let shiftStartDate = document.getElementById("startDateInraday");
-                let shiftEndDate = document.getElementById("endDateInraday");
-                let shiftStartHour = document.getElementById("startHourIntraday");
+                let shiftStartDate = document.getElementById("startDateIntraday").value;
+                let shiftEndDate = document.getElementById("endDateIntraday").value;
+                let shiftStartHour = document.getElementById("startHourIntraday").value;
 
                 if (shiftStartHour == dayShiftStartHour) {
                     document.getElementById("startDateIntraday").value = shiftStartDate;
@@ -753,6 +784,9 @@ let interval = setInterval(function() {
                     if (nightShiftEndHour < secondBreakNightsHour) {
                         document.getElementById("startDateIntraday").value = shiftStartDate;
                         document.getElementById("endDateIntraday").value = shiftEndDate;
+                    } else if (nightShiftEndHour < dayShiftStartHour && secondBreakNightsHour < dayShiftStartHour) {
+                        document.getElementById("startDateIntraday").value = shiftEndDate;
+                        document.getElementById("endDateIntraday").value = shiftEndDate;
                     } else {
                         document.getElementById("startDateIntraday").value = shiftStartDate;
                         document.getElementById("endDateIntraday").value = shiftStartDate;
@@ -764,8 +798,7 @@ let interval = setInterval(function() {
                     document.getElementById("endMinuteIntraday").value = nightShiftEndMinute;
                 }
             }
-            
-            // Add button click for P1,P2,P3. If value of start hour and date is = to the value of a specific shift- P? is mapped to that shift.
+
 
             // Stop our interval
             clearInterval(interval);
